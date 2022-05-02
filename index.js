@@ -21,8 +21,16 @@ const help = () => {
   console.log("  So if there is a note with id abc123456, `micronote rm abc` will delete this note");
 };
 
+const version = () => {
+  const packJson = fs.readFileSync('./package.json');
+  const pack = JSON.parse(packJson);
+  return pack.version;
+}
+
 const mnDir = `${homedir}/.config/micronote`;
-const defaultConfig = {};
+const defaultConfig = {
+  version: version()
+};
 const ensureInit = () => {
   if (!fs.existsSync(mnDir)) {
     fs.mkdirSync(mnDir, { recursive: true });
@@ -97,10 +105,8 @@ commands.nuke = (args) => {
   }
 };
 
-commands['--version'] = (args) => {
-  const packJson = fs.readFileSync('./package.json');
-  const pack = JSON.parse(packJson);
-  console.log(`v${pack.version}`);
+commands['--version'] = commands['-v'] = (args) => {
+  console.log(`v${version()}`);
 }
 
 commands['--help'] = commands['-h'] = commands['?'] = (args) => {
