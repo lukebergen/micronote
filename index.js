@@ -13,9 +13,12 @@ const bgMatch = "\x1b[106m";
 const bgBlack = "\x1b[40m";
 
 const help = () => {
-  console.log("usage: micronote tag1 tag2 ... tagn - message/note");
-  console.log("Alternatively, if you just run `mn` without arguments will bring up your editor");
-  console.log("where you can space seperated tags on the first line and arbitrarily long text from the second linese on");
+  console.log("usage:"); 
+  console.log("create a note: micronote tag1 tag2 ... tagn - message/note");
+  console.log("show all notes tagged as...: micronote [show|s] tag1 tag 2 ...")
+  console.log("remove notes: micronote [remove|rm] id1 id2 id3");
+  console.log("  Note, 'remove/rm' will remove all notes that start with id1, id2, etc..");
+  console.log("  So if there is a note with id abc123456, `micronote rm abc` will delete this note");
 };
 
 const mnDir = `${homedir}/.config/micronote`;
@@ -94,6 +97,16 @@ commands.nuke = (args) => {
   }
 };
 
+commands['--version'] = (args) => {
+  const packJson = fs.readFileSync('./package.json');
+  const pack = JSON.parse(packJson);
+  console.log(`v${pack.version}`);
+}
+
+commands['--help'] = commands['-h'] = commands['?'] = (args) => {
+  help();
+};
+
 const newNote = (tags, note) => {
   ensureInit();
   const notes = readNotes();
@@ -101,10 +114,7 @@ const newNote = (tags, note) => {
   writeNotes(notes);
 };
 
-if (args[2] === '--help') {
-  help();
-  process.exit(0);
-} else if (commands[args[2]]) {
+if (commands[args[2]]) {
   commands[args[2]](args.slice(3, args.length));
 } else {
   const tagEndIndex = args.indexOf("-");
