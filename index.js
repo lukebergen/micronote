@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const VERSION = "0.0.7";
+
 const fs = require('fs');
 const { randomUUID } = require('crypto')
 const homedir = require('os').homedir();
@@ -21,15 +23,9 @@ const help = () => {
   console.log("  So if there is a note with id abc123456, `micronote rm abc` will delete this note");
 };
 
-const version = () => {
-  const packJson = fs.readFileSync('./package.json');
-  const pack = JSON.parse(packJson);
-  return pack.version;
-}
-
 const mnDir = `${homedir}/.config/micronote`;
 const defaultConfig = {
-  version: version()
+  version: VERSION
 };
 const ensureInit = () => {
   if (!fs.existsSync(mnDir)) {
@@ -106,7 +102,7 @@ commands.nuke = (args) => {
 };
 
 commands['--version'] = commands['-v'] = (args) => {
-  console.log(`v${version()}`);
+  console.log(`v${VERSION}`);
 }
 
 commands['--help'] = commands['-h'] = commands['?'] = (args) => {
